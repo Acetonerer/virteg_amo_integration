@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 3  # Количество реплик
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+        - name: backend-container
+          image: your-backend-image:latest  # Замените на ваш образ
+          ports:
+            - containerPort: 8000  # Порт, который ваш бэкенд слушает

@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: celery-worker
+  labels:
+    app: celery
+spec:
+  replicas: 3  # Количество реплик, можно изменить по необходимости
+  selector:
+    matchLabels:
+      app: celery
+  template:
+    metadata:
+      labels:
+        app: celery
+    spec:
+      containers:
+        - name: celery-worker
+          image: your-celery-image:latest  # Замените на образ вашего Celery
+          command: ["celery", "-A", "project", "worker", "--loglevel=info"]  # Укажите вашу команду для запуска
+          env:
+            - name: REDIS_HOST
+              value: "redis"  # Имя сервиса Redis в Kubernetes
+            - name: OTHER_ENV_VARS
+              valueFrom:
+                secretKeyRef:
+                  name: your-secret
+                  key: your-key

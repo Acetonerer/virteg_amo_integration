@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: celery-worker
+spec:
+  selector:
+    app: celery
+  ports:
+    - protocol: TCP
+      port: 5555  # Порт, который будет доступен для других сервисов
+      targetPort: 5555

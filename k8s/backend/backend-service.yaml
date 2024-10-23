@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend-service
+spec:
+  type: ClusterIP  # Тип сервиса, который обеспечивает внутренний доступ
+  selector:
+    app: backend  # Соответствует меткам в Deployment
+  ports:
+    - port: 80  # Порт, на который будет доступен Service
+      targetPort: 8000  # Порт, на который отправляются запросы к контейнеру
