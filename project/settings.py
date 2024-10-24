@@ -143,7 +143,7 @@ CELERY_TIMEZONE = "Asia/Krasnoyarsk"
 
 CElERY_BEAT_SCHEDULE = {
     "update_info_for_tracks": {
-        "task": "track_bumber.tasks.update_info_for_tracks",
+        "task": "track_number.tasks.update_info_for_tracks",
         "schedule": crontab(minute='0', hour='*/3')
     }
 }
