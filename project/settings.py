@@ -44,11 +44,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'celery',
     'django_celery_beat',
+    'corsheaders',
 
     'track_number',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -130,6 +132,8 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / "static"
+
+CORS_ALLOW_ALL_ORIGINS = True
 
 CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_ACCEPT_CONTENT = ["json"]
