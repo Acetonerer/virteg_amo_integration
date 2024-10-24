@@ -46,7 +46,7 @@ services:
     image: nginx:latest
     container_name: nginx
     volumes:
-      - ./nginx:/etc/nginx
+      - ./nginx:/etc/nginx/conf.d
     ports:
       - "81:80"
     networks:
