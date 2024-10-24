@@ -44,6 +44,7 @@ services:
     container_name: nginx
     volumes:
       - /root/virteg_amo_integration/nginx.conf:/etc/nginx/nginx.conf
+      - /etc/letsencrypt/live/24virteg.ru:/etc/letsencrypt/live/24virteg.ru
     ports:
       - "80:80"
       - "443:443"
