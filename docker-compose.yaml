@@ -11,11 +11,14 @@ services:
       - pg_data:/var/lib/postgresql/data
     expose:
       - '5432'
+    networks:
+      - my_network
     healthcheck:
-      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       interval: 10s
       timeout: 5s
       retries: 5
+
 
   backend:
     build:
@@ -65,6 +68,8 @@ services:
     container_name: redis
     ports:
       - '6380:6379'
+    networks:
+      - my_network
     volumes:
       - redis_data:/data
 
@@ -74,6 +79,8 @@ services:
     tty: true
     container_name: celery_worker
     restart: always
+    networks:
+      - my_network
     command: celery -A project worker -l info
     depends_on:
       - redis
@@ -84,6 +91,8 @@ services:
     tty: true
     container_name: celery_beat
     restart: always
+    networks:
+      - my_network
     command: celery -A project beat -l info
     depends_on:
       - redis
