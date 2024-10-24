@@ -29,7 +29,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["24virteg.ru", "0.0.0.0", "213.171.9.100"]
+ALLOWED_HOSTS = ["24virteg.ru", "0.0.0.0", "213.171.9.100", "localhost"]
 
 
 # Application definition
