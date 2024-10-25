@@ -28,7 +28,7 @@ services:
     env_file:
       - .env
     command: >
-      sh -c "python manage.py makemigrations && python manage.py migrate && gunicorn project.wsgi:application --bind 0.0.0.0:8000"
+      sh -c "python manage.py makemigrations && python manage.py migrate && gunicorn -c gunicorn.conf.py project.wsgi:application"
     ports:
       - "8000:8000"
     networks:
@@ -55,7 +55,7 @@ services:
       - backend
     restart: always
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://backend_virteg:8000/" ]  # Замените URL на подходящий для вашего приложения
+      test: [ "CMD", "curl", "-f", "http://backend_virteg:8000/" ]
       interval: 30s
       timeout: 10s
       retries: 5
