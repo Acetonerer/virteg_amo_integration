@@ -57,7 +57,8 @@ class GetTrackNumberFromRussia(BaseRussiaMail):
                 record = {
                     "date": str(rec.OperationParameters.OperDate),
                     "location": rec.AddressParameters.OperationAddress.Description,
-                    "status": rec.OperationParameters.OperAttr.Name
+                    "status": rec.OperationParameters.OperAttr.Name,
+                    "sender": rec.UserParameters.Sndr,
                 }
                 history.append(record)
             return history
