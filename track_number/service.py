@@ -38,8 +38,8 @@ class TrackService(BaseRussiaMail):
 
         first_record = tracking_result[0]
         last_record = tracking_result[-1]
-        new_status = last_record['status']
-        sender = first_record.get('sender')
+        new_status = last_record["status"]
+        sender = first_record.get("sender")
         track_number = self.track_number
 
         if not self._validate_track_number(track_number):
@@ -53,7 +53,9 @@ class TrackService(BaseRussiaMail):
             return new_status
 
         if existing_record.status != new_status:
-            logger.info(f"Статус трек-номера {existing_record.track} изменился с '{existing_record.status}' на '{new_status}'.")
+            logger.info(
+                f"Статус трек-номера {existing_record.track} изменился с '{existing_record.status}' на '{new_status}'."
+            )
             existing_record.status = new_status
             existing_record.save()
             return new_status
@@ -86,17 +88,17 @@ class TrackService(BaseRussiaMail):
     def process_tracking(self):
         """Метод обработки полученных данных по трек-номеру"""
         tracking_data = self.fetch_tracking_data()
-        if 'error' in tracking_data:
+        if "error" in tracking_data:
             logger.error(f"Ошибка при получении данных: {tracking_data['error']}")
-            return {"error": tracking_data['error']}
+            return {"error": tracking_data["error"]}
 
         existing_record = self._get_existing_record(self.track_number)
         existing_status = existing_record.status if existing_record else None
 
-        new_status = self.save_check_update_tracking(tracking_data['data'])
+        new_status = self.save_check_update_tracking(tracking_data["data"])
 
         return {
             "status": "success" if new_status else "no_update",
             "new_status": new_status,
-            "existing_status": existing_status
+            "existing_status": existing_status,
         }

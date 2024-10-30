@@ -19,21 +19,24 @@ class TrackNumberAPIView(APIView):
         result = service.process_tracking()
 
         if result.get("status") == "success":
-            if result.get("new_status") is not None and result.get("new_status") != result.get("existing_status"):
+            if result.get("new_status") is not None and result.get(
+                "new_status"
+            ) != result.get("existing_status"):
                 new_status = result.get("new_status")
                 self.create_amo_task(track_number, new_status)
             else:
                 logger.info("Статус не изменился, задача не будет создана.")
         else:
-            logger.error("Ошибка в процессе отслеживания: " + result.get("error", "неизвестная ошибка"))
+            pass
+            # logger.error("Ошибка в процессе отслеживания: " + result.get("error", "неизвестная ошибка"))
 
         return Response(result)
 
     def create_amo_task(self, track_number, new_status):
         """Создание задачи в AmoCRM с текстом, содержащим информацию о статусе."""
-        AMO_DOMAIN = os.environ.get('AMO_DOMAIN')
-        AMO_DEAL_ID = os.environ.get('AMO_DEAL_ID')
-        AMO_TOKEN = os.environ.get('AMO_TOKEN')
+        AMO_DOMAIN = os.environ.get("AMO_DOMAIN")
+        AMO_DEAL_ID = os.environ.get("AMO_DEAL_ID")
+        AMO_TOKEN = os.environ.get("AMO_TOKEN")
 
         try:
             existing_record = TrackNumber.objects.get(track=track_number)
@@ -51,8 +54,8 @@ class TrackNumberAPIView(APIView):
         task_text = f'Для почтового отправления от {sender_name} с номером №{track_number} статус изменился на "{new_status}"'
         response = amo_client.send_request_for_amo_task(text=task_text)
 
-        if response.get('_embedded') and response['_embedded'].get('tasks'):
-            task_id = response['_embedded']['tasks'][0]['id']
+        if response.get("_embedded") and response["_embedded"].get("tasks"):
+            task_id = response["_embedded"]["tasks"][0]["id"]
             logger.info(f"Задача успешно создана в AmoCRM с ID: {task_id}")
         else:
             logger.error(f"Ошибка при создании задачи в AmoCRM: {response}")

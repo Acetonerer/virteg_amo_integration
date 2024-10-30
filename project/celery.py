@@ -14,7 +14,7 @@ app.conf.broker_connection_retry_on_startup = True
 app.conf.beat_schedule = {
     "update_info_for_tracks": {
         "task": "track_number.tasks.update_info_for_tracks",
-        "schedule": crontab(hour='4')
+        "schedule": crontab(hour="4"),
     }
 }
 

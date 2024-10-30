@@ -9,7 +9,9 @@ logger = logging.getLogger(__name__)
 
 @shared_task
 def update_info_for_tracks():
-    track_numbers = TrackNumber.objects.exclude(status__in=["Вручение адресату", "Получено адресатом"])
+    track_numbers = TrackNumber.objects.exclude(
+        status__in=["Вручение адресату", "Получено адресатом", "Адресату почтальоном"]
+    )
 
     for track_number_obj in track_numbers:
         track_number = track_number_obj.track
@@ -20,9 +22,12 @@ def update_info_for_tracks():
         if result["status"] == "success":
             if result["new_status"] != result["existing_status"]:
                 logger.info(
-                    f"Трек-номер {track_number}: статус изменился с {result['existing_status']} на {result['new_status']}")
+                    f"Трек-номер {track_number}: статус изменился с {result['existing_status']} на {result['new_status']}"
+                )
 
-                create_amo_task.apply_async((track_number, result['new_status']), countdown=30)
+                create_amo_task.apply_async(
+                    (track_number, result["new_status"]), countdown=30
+                )
             track_number_obj.status = result["new_status"]
             track_number_obj.save()
         else:

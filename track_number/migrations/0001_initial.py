@@ -7,19 +7,27 @@ class Migration(migrations.Migration):
 
     initial = True
 
-    dependencies = [
-    ]
+    dependencies = []
 
     operations = [
         migrations.CreateModel(
-            name='TrackNumber',
+            name="TrackNumber",
             fields=[
-                ('track', models.CharField(max_length=50, primary_key=True, serialize=False, unique=True)),
-                ('status', models.CharField(max_length=30)),
-                ('name', models.CharField(blank=True, max_length=30, null=True)),
+                (
+                    "track",
+                    models.CharField(
+                        max_length=50, primary_key=True, serialize=False, unique=True
+                    ),
+                ),
+                ("status", models.CharField(max_length=30)),
+                ("name", models.CharField(blank=True, max_length=30, null=True)),
             ],
             options={
-                'indexes': [models.Index(fields=['status'], name='track_numbe_status_2791cf_idx')],
+                "indexes": [
+                    models.Index(
+                        fields=["status"], name="track_numbe_status_2791cf_idx"
+                    )
+                ],
             },
         ),
     ]

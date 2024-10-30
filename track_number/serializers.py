@@ -6,4 +6,4 @@ class TrackNumberSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TrackNumber
-        fields = ['track', 'status', 'name']
+        fields = ["track", "status", "name"]
