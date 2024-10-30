@@ -9,7 +9,6 @@ logger = logging.getLogger(__name__)
 
 
 class TrackService(BaseRussiaMail):
-
     def __init__(self, track_number):
         super().__init__(track_number)
         self.track_number = track_number
@@ -26,7 +25,7 @@ class TrackService(BaseRussiaMail):
 
         except Exception as error:
             logger.error(f"Error in fetch_tracking_data: {error}")
-            return {"Error": "Failed to fetch tracking data."}
+            return {"error": "Failed to fetch tracking data."}
 
     def save_check_update_tracking(self, tracking_result):
         """Сохраняет или обновляет данные по трек-номеру в базе данных."""
@@ -34,34 +33,37 @@ class TrackService(BaseRussiaMail):
 
         if not tracking_result:
             logger.error("Отсутствуют данные для отслеживания.")
-            return None
+            return None, None, None
 
         first_record = tracking_result[0]
         last_record = tracking_result[-1]
         new_status = last_record["status"]
         sender = first_record.get("sender")
+        recip = first_record.get("recip")
         track_number = self.track_number
 
         if not self._validate_track_number(track_number):
-            return None
+            return None, None, None
 
         existing_record = self._get_existing_record(track_number)
 
         if existing_record is None:
             logger.info(f"Создание новой записи для трек-номера {track_number}.")
-            self._create_new_record(track_number, new_status, sender)
-            return new_status
+            self._create_new_record(track_number, new_status, sender, recip)
+            return new_status, sender, recip
 
         if existing_record.status != new_status:
             logger.info(
                 f"Статус трек-номера {existing_record.track} изменился с '{existing_record.status}' на '{new_status}'."
             )
             existing_record.status = new_status
+            existing_record.name_sender = sender  # обновляем отправителя, если нужно
+            existing_record.name_recip = recip    # обновляем получателя, если нужно
             existing_record.save()
-            return new_status
+            return new_status, sender, recip
 
         logger.info(f"Статус для трек-номера {existing_record.track} не изменился.")
-        return None
+        return None, sender, recip  # Отправляем отправителя и получателя, даже если статус не изменился
 
     @staticmethod
     def _validate_track_number(track_number):
@@ -81,9 +83,14 @@ class TrackService(BaseRussiaMail):
             return None
 
     @staticmethod
-    def _create_new_record(track_number, new_status, sender):
+    def _create_new_record(track_number, new_status, sender, recip):
         """Создание новой записи для трек-номера"""
-        TrackNumber.objects.create(track=track_number, status=new_status, name=sender)
+        TrackNumber.objects.create(
+            track=track_number,
+            status=new_status,
+            name_sender=sender,
+            name_recip=recip
+        )
 
     def process_tracking(self):
         """Метод обработки полученных данных по трек-номеру"""
@@ -95,10 +102,13 @@ class TrackService(BaseRussiaMail):
         existing_record = self._get_existing_record(self.track_number)
         existing_status = existing_record.status if existing_record else None
 
-        new_status = self.save_check_update_tracking(tracking_data["data"])
+        # Получаем новые значения статуса, отправителя и получателя из метода сохранения
+        new_status, sender, recip = self.save_check_update_tracking(tracking_data["data"])
 
         return {
             "status": "success" if new_status else "no_update",
             "new_status": new_status,
             "existing_status": existing_status,
+            "sender": sender,
+            "recip": recip,
         }

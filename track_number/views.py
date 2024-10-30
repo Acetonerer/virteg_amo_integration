@@ -66,6 +66,7 @@ class GetTrackNumberFromRussia(BaseRussiaMail):
                         else "Не указано"
                     ),
                     "sender": rec.UserParameters.Sndr,
+                    "recip": rec.UserParameters.Rcpn,
                 }
                 history.append(record)
             return history

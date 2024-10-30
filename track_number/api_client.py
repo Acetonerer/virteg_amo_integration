@@ -40,7 +40,7 @@ class TrackNumberAPIView(APIView):
 
         try:
             existing_record = TrackNumber.objects.get(track=track_number)
-            sender_name = existing_record.name
+            sender_name = existing_record.name_sender
         except TrackNumber.DoesNotExist:
             logger.error(f"Запись с трек-номером {track_number} не найдена.")
             return
