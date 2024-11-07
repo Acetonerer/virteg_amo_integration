@@ -22,4 +22,5 @@ from django.urls import path, include
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", include("track_number.urls")),
+    path("", include("virteg_documents.urls")),
 ]
